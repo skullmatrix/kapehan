@@ -11,7 +11,7 @@ interface CartItem {
 
 const OrderConfirmation: React.FC = () => {
   const location = useLocation();
-  const { cart } = location.state as { cart: CartItem[] } || { cart: [] };
+  const { cart } = location.state as { cart: CartItem[] };
   const [customerName, setCustomerName] = useState("");
   const navigate = useNavigate();
 
