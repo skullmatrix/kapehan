@@ -1,31 +1,22 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
-import Home from "./pages/Home";
-import OrderType from "./pages/OrderType";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Menu from "./pages/Menu";
-import Payment from './pages/Payment';
-import Checkout from './pages/Checkout';
+import OrderType from "./pages/OrderType";
+import Payment from "./pages/Payment";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
-const AnimatedRoutes = () => {
-  const location = useLocation();
-
-  return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/ordertype" element={<OrderType />} />
-        <Route path="/menu" element={<Menu />} />
-      </Routes>
-    </AnimatePresence>
-  );
-};
-
-const App = () => {
+function App() {
   return (
     <Router>
-      <AnimatedRoutes />
+      <Routes>
+        <Route path="/" element={<OrderType />} />
+        <Route path="/menu" element={<Menu cart={[]} />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;

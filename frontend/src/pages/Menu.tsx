@@ -32,19 +32,19 @@ interface CartItem extends MenuItem {
   quantity: number;
 }
 
-const Menu = () => {
+const Menu = ({ cart }: { cart: CartItem[] }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const orderType = location.state?.orderType || "For Here";
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [cartItems, setCartItems] = useState<CartItem[]>(cart);
 
   const filteredItems = selectedCategory === "All" 
     ? allItems 
     : allItems.filter(item => item.category === selectedCategory);
 
   const addToCart = (item: MenuItem) => {
-    setCart((prev: CartItem[]) => {
+    setCartItems((prev: CartItem[]) => {
       const existing = prev.find(cartItem => cartItem.id === item.id);
       if (existing) {
         return prev.map(cartItem =>
@@ -56,13 +56,13 @@ const Menu = () => {
   };
 
   const decreaseQuantity = (id: number) => {
-    setCart((prev: CartItem[]) => prev
+    setCartItems((prev: CartItem[]) => prev
       .map(item => item.id === id ? { ...item, quantity: item.quantity - 1 } : item)
       .filter(item => item.quantity > 0)
     );
   };
 
-  const getTotal = () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+  const getTotal = () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
   const tax = (parseFloat(getTotal()) * 0.1).toFixed(2);
   const grandTotal = (parseFloat(getTotal()) + parseFloat(tax)).toFixed(2);
 
@@ -77,6 +77,10 @@ const Menu = () => {
       default:
         break;
     }
+  };
+
+  const handleProceedToPay = () => {
+    navigate("/order-confirmation", { state: { cart: cartItems } });
   };
 
   return (
@@ -141,13 +145,13 @@ const Menu = () => {
         </h3>
         
         <div className="cart-items">
-          {cart.length === 0 ? (
+          {cartItems.length === 0 ? (
             <div className="empty-cart">
               <img src="../media/icons/bag.png" alt="empty cart" className="empty-cart-icon" />
               <p>Your cart is empty</p>
             </div>
           ) : (
-            cart.map((item) => (
+            cartItems.map((item) => (
               <div key={item.id} className="cart-item">
                 <img src={item.image} alt={item.name} className="cart-image" />
                 <div className="cart-details">
@@ -167,10 +171,9 @@ const Menu = () => {
         <div className="cart-summary">
           <div>Subtotal: <span>₹{getTotal()}</span></div>
           <div>Tax: <span>₹{tax}</span></div>
-          <div className="total">Total: <span>₹{grandTotal}</span></div>
-        </div>
+          <div className="total">Total: <span>₹{grandTotal}</span></div>        </div>
         
-        <button className="cart-pay">
+        <button className="cart-pay" onClick={handleProceedToPay}>
           <img src="/images/icons/payment.png" alt="payment" className="payment-icon" />
           Proceed to Pay
         </button>
