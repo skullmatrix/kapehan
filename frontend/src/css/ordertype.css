@@ -1,0 +1,60 @@
+/* Background & Layout */
+.ordertype-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #ece0d1;
+  color: #38220f;
+  text-align: center;
+}
+
+/* Title */
+.ordertype-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #634832;
+}
+
+/* Button Wrapper */
+.ordertype-buttons {
+  display: flex;
+  gap: 50px;
+}
+
+/* Buttons */
+.ordertype-button {
+  width: 180px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #dbc1ac;
+  border: 3px solid #967259;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Hover Effect */
+.ordertype-button:hover {
+  background-color: #967259;
+  border-color: #634832;
+  color: white;
+}
+
+/* Icon Styling */
+.ordertype-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+/* Button Text */
+.ordertype-text {
+  font-size: 0.9rem;
+  margin-top: 10px;
+}

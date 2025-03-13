@@ -1,0 +1,75 @@
+/* home.css */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #dbc1ac;  /* Changed to match ordertype's background */
+  color: #634832;  /* Changed to coffee brown color */
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 1s ease-in-out;
+}
+
+.home-container.fade-in {
+  opacity: 1;
+}
+
+.home-container.fade-out {
+  opacity: 0;
+}
+
+.home-logo {
+  height: 160px;
+  animation: pulse 2s infinite;
+}
+
+.home-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-top: 20px;
+  color: #634832;  /* Changed to match ordertype's text color */
+}
+
+.home-cta {
+  font-size: 1.5rem;
+  color: #967259;
+  margin-top: 100px;  /* Increased from 10px to move text lower */
+  animation: bounce 1.5s infinite;
+}
+
+/* Semi-transparent overlay */
+.home-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(150, 114, 89, 0.1);  /* Changed to coffee color with opacity */
+  pointer-events: none;
+}
+
+/* Animations remain unchanged */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
