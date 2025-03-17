@@ -1,48 +1,50 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import "../css/ordertype.css";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { fetchOrderTypes } from '../api';
 
 const OrderType = () => {
-  const navigate = useNavigate();
-  const [direction, setDirection] = useState<number>(0);
+    const navigate = useNavigate();
+    const [orderTypes, setOrderTypes] = useState<{ id: number; name: string }[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-  const handleClick = (type: string) => {
-    setDirection(type === "for-here" ? -1 : 1);
-    setTimeout(() => {
-      navigate(`/menu?orderType=${type}`);
-    }, 300);
-  };
+    useEffect(() => {
+        const loadOrderTypes = async () => {
+            try {
+                const data = await fetchOrderTypes();
+                setOrderTypes(data);
+            } catch (error) {
+                setError('Failed to load order types');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  return (
-    <motion.div 
-      className="ordertype-container"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, x: direction * -1000 }} // Slide animation
-    >
-      <h2 className="ordertype-title">Choose Order Type</h2>
-      <div className="ordertype-buttons">
-        <motion.button
-          className="ordertype-button"
-          whileTap={{ scale: 0.9 }}
-          onClick={() => handleClick("for-here")}
-        >
-          <img src={require("../media/icons/for-here.png")} alt="For Here" className="ordertype-icon" />
-          <span className="ordertype-text">For Here</span>
-        </motion.button>
+        loadOrderTypes();
+    }, []);
 
-        <motion.button
-          className="ordertype-button"
-          whileTap={{ scale: 0.9 }}
-          onClick={() => handleClick("to-go")}
-        >
-          <img src={require("../media/icons/to-go.png")} alt="To Go" className="ordertype-icon" />
-          <span className="ordertype-text">To Go</span>
-        </motion.button>
-      </div>
-    </motion.div>
-  );
+    const handleOrderTypeSelection = (orderTypeId: number) => {
+        navigate('/menu', { state: { orderTypeId } });
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    return (
+        <div className="order-type-container">
+            <h1>Choose Order Type</h1>
+            {orderTypes.map((orderType) => (
+                <button key={orderType.id} onClick={() => handleOrderTypeSelection(orderType.id)}>
+                    {orderType.name}
+                </button>
+            ))}
+        </div>
+    );
 };
 
 export default OrderType;

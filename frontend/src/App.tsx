@@ -1,22 +1,23 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Menu from "./pages/Menu";
-import OrderType from "./pages/OrderType";
-import Payment from "./pages/Payment";
-import Checkout from "./pages/Checkout";
-import OrderConfirmation from "./pages/OrderConfirmation";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import OrderType from './pages/OrderType';
+import Menu from './pages/Menu';
+import Payment from './pages/Payment';
+import OrderConfirmation from './pages/OrderConfirmation';
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<OrderType />} />
-        <Route path="/menu" element={<Menu cart={[]} />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-confirmation" element={<OrderConfirmation />} />
-      </Routes>
-    </Router>
-  );
-}
+const App = () => {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/ordertype" element={<OrderType />} />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/payment" element={<Payment />} />
+                <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            </Routes>
+        </Router>
+    );
+};
 
 export default App;

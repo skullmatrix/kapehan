@@ -1,14 +1,11 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App";
-import "./styles.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import './css/menu.css'; // Import the CSS file
 
-const rootElement = document.getElementById("root");
-if (!rootElement) throw new Error('Failed to find the root element');
-const root = createRoot(rootElement);
-
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+ReactDOM.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
+    document.getElementById('root')
 );

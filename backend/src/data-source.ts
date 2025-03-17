@@ -1,19 +1,19 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { Product } from "../entity/Product";
-import { OrderType } from "../entity/OrderType";
-import { Invoice } from "../entity/Invoice";
-import { PaymentType } from "../entity/PaymentType";
+import { Product } from "./entity/Product";
+import { OrderType } from "./entity/OrderType";
+import { Invoice } from "./entity/Invoice";
+import { PaymentType } from "./entity/PaymentType";
 import mysql from "mysql2/promise";
-import config from "../config";
+import config from "./config";
 
 dotenv.config();
 
 const { host, port, user, password, database } = config.database;
 
 // Create DataSource without initializing
-export const db = new DataSource({
+export const AppDataSource = new DataSource({
     type: "mysql",
     host,
     port,
@@ -63,10 +63,10 @@ export async function initializeDatabase() {
 
         // Now initialize TypeORM
         console.log("🚀 Initializing TypeORM...");
-        await db.initialize();
+        await AppDataSource.initialize();
         console.log("✅ TypeORM initialized successfully!");
         
-        return db;
+        return AppDataSource;
 
     } catch (error) {
         console.error("❌ Database initialization failed:", error);

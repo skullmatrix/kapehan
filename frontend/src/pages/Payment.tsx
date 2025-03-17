@@ -1,53 +1,81 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-
-// Mock function to simulate fetching customers
-const getCustomers = async () => {
-  return [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Smith" },
-  ];
-};
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { fetchPaymentTypes, createInvoice } from '../api';
 
 const Payment = () => {
-  const navigate = useNavigate();
-  interface Customer {
-    id: number;
-    name: string;
-  }
-  
-  const [customers, setCustomers] = useState<Customer[]>([]);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { cart, orderTypeId } = location.state;
+    const [name, setName] = useState('');
+    const [paymentTypeId, setPaymentTypeId] = useState<number | null>(null);
+    const [paymentTypes, setPaymentTypes] = useState<{ id: number; name: string }[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      const data = await getCustomers() as Customer[];
-      setCustomers(data);
+    useEffect(() => {
+        const loadPaymentTypes = async () => {
+            try {
+                const data = await fetchPaymentTypes();
+                setPaymentTypes(data);
+            } catch (error) {
+                setError('Failed to load payment types');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadPaymentTypes();
+    }, []);
+
+    const handlePayment = async () => {
+        if (!paymentTypeId) {
+            alert('Please select a payment type');
+            return;
+        }
+
+        const total = cart.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+        const tax = total * 0.12; // 12% tax
+        const grandTotal = total + tax;
+
+        const invoiceData = {
+            orderNumber: Math.floor(Math.random() * 1000000).toString(),
+            customerName: name,
+            total: total,
+            tax: tax,
+            grandTotal: grandTotal,
+            orderTypeId: orderTypeId,
+            paymentTypeId: paymentTypeId,
+        };
+
+        try {
+            await createInvoice(invoiceData);
+            navigate('/order-confirmation', { state: { cart, name, orderTypeId, paymentTypeId, total, tax, grandTotal } });
+        } catch (error) {
+            setError('Failed to process payment');
+        }
     };
 
-    fetchCustomers();
-  }, []);
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-  return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <h2 className="text-3xl font-bold">Choose Payment Method</h2>
-      <div className="space-x-6 mt-4">
-        <button className="bg-blue-500 text-white px-6 py-3 rounded-lg" onClick={() => navigate("/order-complete")}>
-          Card
-        </button>
-        <button className="bg-green-500 text-white px-6 py-3 rounded-lg" onClick={() => navigate("/order-complete")}>
-          Cash
-        </button>
-      </div>
-      <div className="mt-4">
-        <h3 className="text-xl">Customers:</h3>
-        <ul>
-          {customers.map((customer) => (
-            <li key={customer.id}>{customer.name}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    return (
+        <div className="payment-container">
+            <h1>Payment</h1>
+            <input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+            <select value={paymentTypeId || ''} onChange={(e) => setPaymentTypeId(Number(e.target.value))}>
+                <option value="">Select Payment Type</option>
+                {paymentTypes.map((paymentType) => (
+                    <option key={paymentType.id} value={paymentType.id}>{paymentType.name}</option>
+                ))}
+            </select>
+            <button onClick={handlePayment}>Pay</button>
+        </div>
+    );
 };
 
 export default Payment;

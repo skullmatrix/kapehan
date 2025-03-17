@@ -1,62 +1,31 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import "../css/orderconfirmation.css";
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-}
+const OrderConfirmation = () => {
+    const location = useLocation();
+    const { cart, name, orderTypeId, paymentTypeId, total, tax, grandTotal } = location.state;
+    const orderNumber = Math.floor(Math.random() * 1000000);
+    const date = new Date().toLocaleString();
 
-const OrderConfirmation: React.FC = () => {
-  const location = useLocation();
-  const { cart } = location.state as { cart: CartItem[] };
-  const [customerName, setCustomerName] = useState("");
-  const navigate = useNavigate();
-
-  const handleConfirmOrder = () => {
-    // Handle order confirmation logic here
-    navigate("/order-complete");
-  };
-
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
-
-  return (
-    <div className="order-confirmation-container">
-      <h2 className="order-confirmation-title">Order Confirmation</h2>
-      <div className="order-confirmation-content">
-        <div className="order-items">
-          <h3 className="order-items-title">Items in Cart</h3>
-          <ul>
-            {cart.map((item) => (
-              <li key={item.id} className="order-item">
-                <span>{item.name}</span>
-                <span>{item.quantity} x ₹{item.price.toFixed(2)}</span>
-              </li>
+    return (
+        <div className="order-confirmation-container">
+            <h1>Order Confirmation</h1>
+            <p>Order Number: {orderNumber}</p>
+            <p>Name: {name}</p>
+            <p>Date and Time: {date}</p>
+            <h2>Order List</h2>
+            {cart.map((item: any) => (
+                <div key={item.id}>
+                    <p>{item.name} - ${item.price.toFixed(2)} x {item.quantity}</p>
+                </div>
             ))}
-          </ul>
-          <div className="order-total">
-            <span>Total:</span>
-            <span>₹{total}</span>
-          </div>
+            <p>Total: ${total.toFixed(2)}</p>
+            <p>Tax: ${tax.toFixed(2)}</p>
+            <p>Grand Total: ${grandTotal.toFixed(2)}</p>
+            <p>Order Type: {orderTypeId}</p>
+            <p>Payment Type: {paymentTypeId}</p>
         </div>
-        <div className="customer-info">
-          <h3 className="customer-info-title">Customer Information</h3>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            className="customer-name-input"
-          />
-          <button className="confirm-order-button" onClick={handleConfirmOrder}>
-            Confirm Order
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default OrderConfirmation;
