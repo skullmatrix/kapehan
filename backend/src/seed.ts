@@ -13,16 +13,32 @@ async function seedDatabase() {
         { name: "For Here" },
         { name: "To Go" },
     ];
-    await orderTypeRepository.save(orderTypes);
-    console.log("OrderTypes seeded successfully!");
+
+    for (const orderType of orderTypes) {
+        const existingOrderType = await orderTypeRepository.findOneBy({ name: orderType.name });
+        if (!existingOrderType) {
+            await orderTypeRepository.save(orderType);
+            console.log(`✅ OrderType '${orderType.name}' seeded successfully!`);
+        } else {
+            console.log(`⚠️ OrderType '${orderType.name}' already exists. Skipping...`);
+        }
+    }
 
     // Seed PaymentTypes
     const paymentTypes = [
         { name: "Pay at the Cashier" },
         { name: "Pay Online" },
     ];
-    await paymentTypeRepository.save(paymentTypes);
-    console.log("PaymentTypes seeded successfully!");
+
+    for (const paymentType of paymentTypes) {
+        const existingPaymentType = await paymentTypeRepository.findOneBy({ name: paymentType.name });
+        if (!existingPaymentType) {
+            await paymentTypeRepository.save(paymentType);
+            console.log(`✅ PaymentType '${paymentType.name}' seeded successfully!`);
+        } else {
+            console.log(`⚠️ PaymentType '${paymentType.name}' already exists. Skipping...`);
+        }
+    }
 
     // Seed Products
     const products = [
@@ -30,8 +46,16 @@ async function seedDatabase() {
         { name: "Iced Coffee", category: "Cold", price: 120, rating: 4.7, image: "/images/iced-coffee.jpg", desc: "Refreshing iced coffee" },
         { name: "Croissant", category: "Pastry", price: 80, rating: 4.3, image: "/images/croissant.jpg", desc: "Freshly baked croissant" },
     ];
-    await productRepository.save(products);
-    console.log("Products seeded successfully!");
+
+    for (const product of products) {
+        const existingProduct = await productRepository.findOneBy({ name: product.name });
+        if (!existingProduct) {
+            await productRepository.save(product);
+            console.log(`✅ Product '${product.name}' seeded successfully!`);
+        } else {
+            console.log(`⚠️ Product '${product.name}' already exists. Skipping...`);
+        }
+    }
 }
 
 export { seedDatabase };
